@@ -1,0 +1,51 @@
+version: 2
+
+sources:
+  - name: road_safety
+    description: Raw UK road-safety data loaded from CSV files in S3.
+    database: FRED_DATA_PLATFORM
+    schema: RAW
+
+    tables:
+      - name: casualties
+        identifier: CASUALTIES
+        description: Raw casualty records from the 2024 road-safety dataset.
+        columns:
+          - name: collision_index
+            quote: true
+            description: Identifier of the collision associated with the casualty.
+            data_tests:
+              - not_null
+
+          - name: casualty_reference
+            quote: true
+            description: Casualty reference within the collision.
+            data_tests:
+              - not_null
+
+      - name: collisions
+        identifier: COLLISIONS
+        description: Raw collision records from the 2024 road-safety dataset.
+        columns:
+          - name: collision_index
+            quote: true
+            description: Unique identifier for a collision.
+            data_tests:
+              - not_null
+              - unique
+
+      - name: vehicles
+        identifier: VEHICLES
+        description: Raw vehicle records associated with collisions.
+        columns:
+          - name: collision_index
+            quote: true
+            description: Identifier of the collision associated with the vehicle.
+            data_tests:
+              - not_null
+
+          - name: vehicle_reference
+            quote: true
+            description: Vehicle reference within the collision.
+            data_tests:
+              - not_null

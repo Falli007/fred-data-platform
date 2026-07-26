@@ -1,0 +1,400 @@
+# Project Setup
+
+## Purpose
+
+This document explains how the Road Safety Analytics project was created from scratch.
+
+The goal is not only to document what was built, but also why each decision was made. By following this guide, the project can be recreated in the future without relying on memory.
+
+---
+
+# Project Information
+
+Project Name
+
+Fred Data Platform
+
+Subject Area
+
+Road Safety Analytics
+
+Primary Technologies
+
+- dbt
+- Snowflake
+- SQL
+- AWS S3
+- Git
+- GitHub
+
+Repository
+
+fred-data-platform
+
+Development Methodology
+
+Feature branch development using Git and Pull Requests.
+
+---
+
+# Project Objective
+
+The purpose of this project is to build a modern analytics engineering pipeline using dbt and Snowflake.
+
+Rather than querying raw operational datasets directly, the objective is to transform them into trusted analytical datasets that can be consumed by dashboards, reports and downstream applications.
+
+The project demonstrates modern data engineering principles including:
+
+- Modular SQL development
+- Layered architecture
+- Version control
+- Testing
+- Documentation
+- Data validation
+- Deployment into Snowflake
+
+The completed solution follows many of the same engineering practices used by analytics engineering teams in production environments.
+
+---
+
+# Skills Demonstrated
+
+This project demonstrates practical experience with:
+
+- Analytics Engineering
+- Data Warehousing
+- SQL Development
+- dbt
+- Snowflake
+- YAML
+- Git
+- GitHub
+- Cloud Storage
+- Data Modelling
+- Documentation
+- Testing
+- Data Validation
+
+---
+
+# Project Architecture
+
+The completed solution follows a layered architecture.
+
+```
+
+Raw Data
+
+↓
+
+AWS S3
+
+↓
+
+Snowflake
+
+↓
+
+dbt Sources
+
+↓
+
+Staging Models
+
+↓
+
+Intermediate Models
+
+↓
+
+Mart Models
+
+↓
+
+Business Reporting
+
+```
+
+Each layer has one responsibility.
+
+Keeping responsibilities separate makes the project easier to understand, maintain and extend.
+
+---
+
+# Why This Architecture?
+
+Many beginner projects place all SQL inside one script.
+
+Although this works for small datasets, it quickly becomes difficult to maintain.
+
+Instead, this project separates transformations into logical layers.
+
+Benefits include:
+
+- Easier debugging
+- Smaller SQL models
+- Reusable business logic
+- Better testing
+- Better documentation
+- Clear dependencies
+- Faster onboarding for new developers
+
+This architecture is widely adopted across modern analytics engineering teams.
+
+---
+
+# Development Approach
+
+The project was built incrementally.
+
+Instead of attempting to build everything in one step, each layer was completed and validated before moving to the next.
+
+The development order was:
+
+1. Create project structure
+2. Configure dbt
+3. Configure Snowflake
+4. Create sources
+5. Build staging models
+6. Build intermediate model
+7. Build mart models
+8. Test the models
+9. Validate the deployment
+10. Commit the changes
+11. Create a Pull Request
+
+Completing one stage at a time made troubleshooting significantly easier.
+
+---
+
+# Repository Structure
+
+The repository uses the standard dbt project structure.
+
+```
+
+fred-data-platform/
+
+├── analyses/
+
+├── docs/
+
+├── macros/
+
+├── models/
+
+│ ├── staging/
+
+│ ├── intermediate/
+
+│ └── marts/
+
+├── seeds/
+
+├── snapshots/
+
+├── tests/
+
+├── target/
+
+├── dbt_project.yml
+
+└── README.md
+
+```
+
+Every folder exists for a specific reason.
+
+---
+
+# Folder Responsibilities
+
+## analyses
+
+Used for exploratory SQL queries.
+
+These queries are useful during development but are not materialised into Snowflake.
+
+---
+
+## docs
+
+Contains the complete engineering documentation.
+
+This documentation explains:
+
+- Project setup
+- AWS configuration
+- Snowflake configuration
+- dbt configuration
+- Model design
+- Validation
+- Git workflow
+- Troubleshooting
+- Rebuild process
+
+---
+
+## macros
+
+Contains reusable Jinja functions.
+
+At the time of writing, no custom macros have been implemented.
+
+This was an intentional design decision.
+
+Macros should only be introduced when SQL logic begins to repeat across multiple models.
+
+Adding unnecessary macros increases complexity without providing additional value.
+
+---
+
+## models
+
+This is the core of the project.
+
+Every SQL transformation is stored inside this directory.
+
+Models are grouped by transformation layer.
+
+---
+
+## seeds
+
+Stores static reference datasets that can be loaded into Snowflake.
+
+This project does not currently use seeds.
+
+---
+
+## snapshots
+
+Stores historical versions of data.
+
+Snapshots are useful when tracking changes over time.
+
+This functionality has been reserved for future enhancements.
+
+---
+
+## tests
+
+Contains custom dbt tests.
+
+Although built-in tests were used during development, additional custom tests may be added in future versions.
+
+---
+
+## target
+
+Automatically generated by dbt.
+
+Contains compiled SQL, manifest files and other generated artefacts.
+
+This folder should not be edited manually.
+
+---
+
+# Before Development Started
+
+Before writing any SQL, several design decisions were made.
+
+The following principles guided the project.
+
+## Principle 1
+
+One model should perform one responsibility.
+
+---
+
+## Principle 2
+
+Business logic should not exist inside staging models.
+
+---
+
+## Principle 3
+
+Every transformation should be reusable.
+
+---
+
+## Principle 4
+
+Every deployment should be validated inside Snowflake.
+
+---
+
+## Principle 5
+
+Every important decision should be documented.
+
+---
+
+# Development Workflow
+
+The workflow followed throughout the project was:
+
+```
+
+Plan
+
+↓
+
+Build
+
+↓
+
+Validate
+
+↓
+
+Test
+
+↓
+
+Document
+
+↓
+
+Commit
+
+↓
+
+Push
+
+↓
+
+Pull Request
+
+↓
+
+Merge
+
+```
+
+Following the same workflow for every feature helps maintain consistency across the project.
+
+---
+
+# Lessons Learned During Project Setup
+
+Several lessons became clear during the initial setup.
+
+Planning the project structure before writing SQL reduced rework later in the project.
+
+Separating responsibilities early made each subsequent stage significantly easier.
+
+Creating documentation alongside development prevented important design decisions from being forgotten.
+
+Using feature branches from the beginning ensured that changes remained isolated until they were ready for review.
+
+---
+
+# Next Document
+
+The next stage of the project explains how AWS S3 was configured and how raw road safety datasets entered the platform.
+
+Continue with:
+
+02_aws_s3_setup.md
