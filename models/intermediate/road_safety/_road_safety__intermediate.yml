@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: int_road_safety__collision_summary
+    description: One record per collision, enriched with calculated casualty and vehicle totals.
+
+    columns:
+      - name: collision_index
+        description: Unique identifier for each collision.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: number_of_casualties
+        description: Total casualty records associated with the collision.
+        data_tests:
+          - not_null
+
+      - name: number_of_fatal_casualties
+        description: Number of casualties with fatal severity.
+        data_tests:
+          - not_null
+
+      - name: number_of_serious_casualties
+        description: Number of casualties with serious severity.
+        data_tests:
+          - not_null
+
+      - name: number_of_slight_casualties
+        description: Number of casualties with slight severity.
+        data_tests:
+          - not_null
+
+      - name: number_of_vehicles
+        description: Total vehicle records associated with the collision.
+        data_tests:
+          - not_null

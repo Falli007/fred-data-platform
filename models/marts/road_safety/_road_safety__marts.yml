@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: fct_road_safety__collisions
+    description: Analytics-ready fact table containing one record per road collision with casualty and vehicle totals.
+
+    columns:
+      - name: collision_index
+        description: Unique identifier for each collision.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: collision_date
+        description: Date on which the collision occurred.
+        data_tests:
+          - not_null
+
+      - name: number_of_casualties
+        description: Total casualties associated with the collision.
+        data_tests:
+          - not_null
+
+      - name: number_of_vehicles
+        description: Total vehicles associated with the collision.
+        data_tests:
+          - not_null
+
+  - name: agg_road_safety__daily_summary
+    description: Daily summary of road collisions, casualties and vehicles for reporting.
+
+    columns:
+      - name: collision_date
+        description: Date represented by the daily summary record.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: total_collisions
+        description: Total number of collisions recorded on the date.
+        data_tests:
+          - not_null
+
+      - name: total_casualties
+        description: Total number of casualties recorded on the date.
+        data_tests:
+          - not_null
+
+      - name: fatal_casualties
+        description: Total number of fatal casualties recorded on the date.
+        data_tests:
+          - not_null
+
+      - name: serious_casualties
+        description: Total number of serious casualties recorded on the date.
+        data_tests:
+          - not_null
+
+      - name: slight_casualties
+        description: Total number of slight casualties recorded on the date.
+        data_tests:
+          - not_null
+
+      - name: total_vehicles
+        description: Total number of vehicles involved in collisions on the date.
+        data_tests:
+          - not_null
