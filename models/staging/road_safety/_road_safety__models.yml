@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: stg_road_safety__collisions
+    description: Cleaned and standardised 2024 UK road-safety collision records.
+    columns:
+      - name: collision_index
+        description: Unique identifier for each collision.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: collision_year
+        description: Year in which the collision occurred.
+        data_tests:
+          - not_null
+
+  - name: stg_road_safety__casualties
+    description: Cleaned and standardised casualty records associated with road collisions.
+    columns:
+      - name: collision_index
+        description: Identifier linking the casualty to its collision.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_road_safety__collisions')
+                field: collision_index
+
+      - name: casualty_reference
+        description: Casualty identifier within the collision.
+        data_tests:
+          - not_null
+
+      - name: casualty_severity
+        description: Coded severity classification for the casualty.
+        data_tests:
+          - not_null
+
+  - name: stg_road_safety__vehicles
+    description: Cleaned and standardised vehicle records associated with road collisions.
+    columns:
+      - name: collision_index
+        description: Identifier linking the vehicle to its collision.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_road_safety__collisions')
+                field: collision_index
+
+      - name: vehicle_reference
+        description: Vehicle identifier within the collision.
+        data_tests:
+          - not_null
+
+      - name: vehicle_type
+        description: Coded classification of the vehicle.
+        data_tests:
+          - not_null
