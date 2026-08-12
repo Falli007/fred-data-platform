@@ -1,178 +1,209 @@
-# 🚦 Fred Data Platform
+# Customer Sales Analytics Engineering Platform
 
-> An end-to-end Analytics Engineering project demonstrating how raw road safety data can be transformed into trusted analytical datasets using AWS S3, Snowflake, dbt and GitHub.
+End-to-end analytics engineering project built with **Snowflake, dbt, SQL, Jinja and GitHub**. The project transforms raw customer, account, transaction, loan, marketing and customer-service data into tested analytical models for reporting and analysis.
 
----
+## Project Architecture
 
-## Overview
+```text
+Snowflake RAW
+    |
+    v
+STAGING
+    |
+    v
+INTERMEDIATE
+    |
+    v
+MARTS
+    |
+    +-- Dimensions
+    |   +-- DIM_CUSTOMER
+    |   +-- DIM_ACCOUNT
+    |   +-- DIM_CAMPAIGN
+    |
+    +-- Facts
+    |   +-- FACT_TRANSACTIONS
+    |   +-- FACT_LOANS
+    |   +-- FACT_MARKETING
+    |
+    +-- Business Marts
+        +-- MART_CUSTOMER_360
+        +-- MART_LOAN_PERFORMANCE
+        +-- MART_MARKETING_CAMPAIGN
+        +-- MART_TRANSACTION_SUMMARY
+```
 
-This repository contains a complete analytics engineering platform built using modern cloud technologies.
-
-The project demonstrates how raw datasets move through a layered transformation pipeline before becoming analytics-ready models suitable for dashboards and reporting.
-
-Rather than focusing only on SQL, the repository also documents the engineering decisions, testing approach, validation process and deployment workflow used throughout development.
-
----
-
-## Technologies
+## Technology Stack
 
 | Technology | Purpose |
-|------------|----------|
-| AWS S3 | Raw data storage |
+|---|---|
 | Snowflake | Cloud data warehouse |
-| dbt | Data transformation |
-| SQL | Data modelling |
-| Git | Version control |
-| GitHub | Collaboration & Pull Requests |
+| dbt | SQL transformation, testing and documentation |
+| SQL | Data modelling and business logic |
+| Jinja | Dynamic SQL and reusable dbt logic |
+| Git/GitHub | Version control and project repository |
 
----
+## Snowflake Structure
 
-## Architecture
+Database:
 
 ```text
-                    Road Safety CSV Files
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │     AWS S3       │
-                    │ Raw File Storage │
-                    └──────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │   Snowflake      │
-                    │ Data Warehouse   │
-                    └──────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │   dbt Sources    │
-                    └──────────────────┘
-                              │
-                              ▼
-              ┌────────────────────────────────┐
-              │        Staging Models          │
-              │ STG_COLLISIONS                 │
-              │ STG_CASUALTIES                 │
-              │ STG_VEHICLES                   │
-              └────────────────────────────────┘
-                              │
-                              ▼
-              ┌────────────────────────────────┐
-              │ Intermediate Models            │
-              │ INT_COLLISION_SUMMARY          │
-              └────────────────────────────────┘
-                              │
-                              ▼
-              ┌────────────────────────────────┐
-              │ Mart Models                    │
-              │ FCT_COLLISIONS                 │
-              │ AGG_DAILY_SUMMARY             │
-              └────────────────────────────────┘
-                              │
-                              ▼
-                    Dashboards & Analytics
+DBT_ENGNR
 ```
 
----
-
-## Repository Structure
+Schemas:
 
 ```text
-fred-data-platform/
+RAW
+STAGING
+INTERMEDIATE
+MARTS
+```
 
-README.md
+The RAW schema contains the source tables:
 
-docs/
+```text
+ACCOUNTS
+CUSTOMERS
+CUSTOMER_SERVICE
+LOANS
+MARKETING_CAMPAIGNS
+TRANSACTIONS
+```
 
+## dbt Model Structure
+
+```text
 models/
-
-analyses/
-
-macros/
-
-tests/
-
-learning/
+├── staging/
+│   ├── stg_accounts.sql
+│   ├── stg_customers.sql
+│   ├── stg_customer_service.sql
+│   ├── stg_loans.sql
+│   ├── stg_marketing_campaigns.sql
+│   ├── stg_transactions.sql
+│   └── schema.yml
+│
+├── intermediate/
+│   ├── int_customer_profile.sql
+│   ├── int_customer_loans.sql
+│   ├── int_customer_transactions.sql
+│   └── schema.yml
+│
+└── marts/
+    ├── dimensions/
+    │   ├── dim_customer.sql
+    │   ├── dim_account.sql
+    │   ├── dim_campaign.sql
+    │   └── schema.yml
+    │
+    ├── facts/
+    │   ├── fact_transactions.sql
+    │   ├── fact_loans.sql
+    │   ├── fact_marketing.sql
+    │   └── schema.yml
+    │
+    ├── mart_customer_360.sql
+    ├── mart_loan_performance.sql
+    ├── mart_marketing_campaign.sql
+    ├── mart_transaction_summary.sql
+    └── schema.yml
 ```
 
----
+## Macros and Jinja
 
-## Project Highlights
+The project uses Jinja through dbt functions such as `ref()` and includes reusable macros in the `macros/` directory.
 
-- End-to-end analytics engineering pipeline
-- Layered dbt architecture
-- Snowflake cloud data warehouse
-- AWS S3 raw storage
-- Modular SQL models
-- Testing and validation
-- Git feature branch workflow
-- Engineering documentation
-- Troubleshooting guide
-- Rebuild checklist
+```text
+macros/
+├── generate_schema_name.sql
+└── calculate_risk_band.sql
+```
 
----
+`generate_schema_name.sql` ensures models are created in the intended Snowflake schemas instead of prefixed schema names.
+
+`calculate_risk_band.sql` demonstrates reusable business logic through a custom Jinja macro.
+
+## Data Quality
+
+The project includes dbt data tests for:
+
+- `not_null`
+- `unique`
+- `relationships`
+
+Relationship tests validate referential integrity between customer foreign keys and `dim_customer`.
+
+The completed project passed the full dbt test suite with no test errors.
+
+## Core Commands
+
+Build the complete project:
+
+```bash
+dbt build
+```
+
+Run all tests:
+
+```bash
+dbt test
+```
+
+Generate dbt documentation metadata:
+
+```bash
+dbt docs generate
+```
+
+Build a specific model:
+
+```bash
+dbt build --select <model_name>
+```
+
+Build models from a folder:
+
+```bash
+dbt build --select path:models/marts
+```
+
+## Example Validation in Snowflake
+
+```sql
+SELECT *
+FROM DBT_ENGNR.MARTS.MART_CUSTOMER_360
+LIMIT 10;
+```
+
+```sql
+SELECT *
+FROM DBT_ENGNR.MARTS.FACT_TRANSACTIONS
+LIMIT 10;
+```
+
+```sql
+SELECT *
+FROM DBT_ENGNR.MARTS.FACT_LOANS
+LIMIT 10;
+```
+
+```sql
+SELECT *
+FROM DBT_ENGNR.MARTS.FACT_MARKETING
+LIMIT 10;
+```
 
 ## Documentation
 
-| Guide | Description |
-|--------|-------------|
-| 01 | Project Setup |
-| 02 | AWS S3 |
-| 03 | Snowflake |
-| 04 | Data Loading |
-| 05 | dbt |
-| 06 | Model Design |
-| 07 | Testing |
-| 08 | Git Workflow |
-| 09 | Troubleshooting |
-| 10 | Rebuild Checklist |
-| 11 | Engineering Decisions |
-| 12 | Architecture |
-| 13 | Glossary |
+A complete rebuild guide is available here:
 
----
+**[A-Z Project Build Guide](docs/A_Z_PROJECT_GUIDE.md)**
 
-## Skills Demonstrated
+It documents the full process from Snowflake raw tables through staging, intermediate models, dimensions, facts, marts, testing, macros, documentation and GitHub.
 
-- Analytics Engineering
-- Data Engineering
-- SQL
-- dbt
-- Snowflake
-- AWS
-- Git
-- GitHub
-- Data Modelling
-- Testing
-- Documentation
-- Cloud Architecture
+## Project Status
 
----
+**Completed.**
 
-## Future Improvements
-
-- Incremental Models
-- Snapshots
-- CI/CD
-- GitHub Actions
-- Data Quality Monitoring
-- Snowpipe
-- Semantic Models
-- Exposures
-
----
-
-## Author
-
-**Fredrick Alli**
-
-Analytics Engineer | Data Engineer | AI Engineer
-
-GitHub: Falli007
-
----
-
-## License
-
-MIT
+The finished project contains a layered dbt architecture, dimensional modelling, analytical marts, automated data tests, relationship validation, Jinja/macros and generated dbt documentation metadata.
